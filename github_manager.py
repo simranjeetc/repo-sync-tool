@@ -1,5 +1,5 @@
 import requests
-import logging
+from logger import log_info, log_error, log_debug, log_warning, log_critical, log_exception
 from config import GITHUB_TOKEN, GITHUB_API_URL
 
 class GitHubManager:
@@ -19,7 +19,7 @@ class GitHubManager:
                 params = {'per_page': 100, 'page': page}
                 response = requests.get(url, headers=self.headers, params=params)
                 if response.status_code != 200:
-                    logging.error(f"Failed to fetch repos for org {org}: {response.status_code}")
+                    log_error(f"Failed to fetch repos for org {org}: {response.status_code}")
                     break
                 data = response.json()
                 if not data:

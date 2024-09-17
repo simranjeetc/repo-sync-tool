@@ -15,5 +15,6 @@ CLONE_METHOD = os.getenv('CLONE_METHOD', 'ssh')  # 'ssh' or 'http'
 CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '3600'))  # in seconds
 SYNC_ENABLED = os.getenv('SYNC_ENABLED', 'true').lower() == 'true'
 
+BASE_REPO_DIR = os.getenv('BASE_DIR', '/app/repos')
 # Logging Configuration
-LOG_DIR = os.getenv('LOG_DIR', '/logs')
+# LOG_DIR = os.getenv('LOG_DIR', '/logs')

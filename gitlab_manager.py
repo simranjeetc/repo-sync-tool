@@ -1,5 +1,5 @@
 import requests
-import logging
+from logger import log_info, log_error, log_debug, log_warning, log_critical, log_exception
 from urllib.parse import quote
 from config import GITLAB_TOKEN, GITLAB_API_URL
 
@@ -18,7 +18,7 @@ class GitLabManager:
                 params = {'per_page': 100, 'page': page, 'include_subgroups': True}
                 response = requests.get(url, headers=self.headers, params=params)
                 if response.status_code != 200:
-                    logging.error(f"Failed to fetch repos for project {project}: {response.status_code}")
+                    log_error(f"Failed to fetch repos for project {project}: {response.status_code}")
                     break
                 data = response.json()
                 if not data:
