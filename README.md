@@ -35,6 +35,14 @@ This tool automates the cloning and synchronization of repositories from specifi
 
 ## Installation
 
+### Published Docker Image
+
+```bash
+docker pull simranchawla/repo-sync-tool:tagname
+```
+
+Latest tagname can be taken from https://hub.docker.com/repository/docker/simranchawla/repo-sync-tool/general
+
 ### Clone the Repository
 
 ```bash
@@ -121,7 +129,7 @@ If `CLONE_METHOD` is set to `"ssh"`, you need to provide SSH keys.
 The contents of the ssh directory will be mounted to `/root/.ssh` directory on the container. 
 
   ```bash
-  -v /path/to/ssh/keys:/root/.ssh
+  -v /path/to/ssh/keys:/tmp/ssh_keys_mount:ro
   ```
 
 - **Permissions**: Set the correct permissions for your SSH keys (`chmod 600`).
