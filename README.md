@@ -56,12 +56,12 @@ All configurations are managed via environment variables.
 
 - `GITHUB_ORGS`: Comma-separated list of GitHub organizations.
 
-  Example: `"FileAnalysisSuite,CAFDataProcessing"`
+  Example: `"org1,org2"`
 
 - `GITHUB_TOKEN`: GitHub access token.
 - `GITLAB_PROJECTS`: Comma-separated list of GitLab projects.
 
-  Example: `"CyberSecurity Enterprise / Structured Data Manager,CyberSecurity Enterprise / Core Data Discovery and Risk Insights"`
+  Example: `"Enterprise/project1,Enterprise/project2"`
 
 - `GITLAB_TOKEN`: GitLab access token.
 - `CLONE_METHOD`: Cloning method, `"ssh"` or `"http"`. Default is `"ssh"`.
@@ -81,19 +81,20 @@ You can set environment variables by:
 ### Running the Docker Container
 
 ```bash
-docker run -d \
-  -v /path/to/ssh/keys:/tmp/ssh_keys_mount:ro  \
-  -v /path/to/logs:/app/logs \
-  -v /path/to/github_repos:/app/github_repos \
-  -v /path/to/gitlab_repos:/app/gitlab_repos \
-  -e GITHUB_ORGS="CAFApi,CAFDataProcessing" \
-  -e GITHUB_TOKEN="your_github_access_token" \
-  -e GITLAB_PROJECTS="Enterprise/project1,Enterprise/project2``" \
-  -e GITLAB_TOKEN="your_gitlab_access_token" \
-  -e CLONE_METHOD="ssh" \
-  -e CHECK_INTERVAL="3600" \
-  -e SYNC_ENABLED="true" \
-  repo-sync-tool
+   docker run -d \
+     -v /path/to/ssh/keys:/tmp/ssh_keys_mount:ro \
+     -v /path/to/logs:/app/logs \
+     -v /path/to/repos_on_host:/app/repos \
+     -e GITHUB_ORGS="YourGitHubOrg" \
+     -e GITHUB_TOKEN="YourGitHubAccessToken" \
+     -e GITLAB_PROJECTS="YourGitLabProjects" \
+     -e GITLAB_TOKEN="YourGitLabAccessToken" \
+     -e CLONE_METHOD="ssh" \
+     -e CHECK_INTERVAL="3600" \
+     -e SYNC_ENABLED="true" \
+     -e BASE_REPO_DIR="/app/repos" \
+     -e GITLAB_API_URL="https://gitlab.com/api/v4" \
+     repo-sync-tool
 ```
 
 **Notes:**
@@ -115,7 +116,9 @@ Logs are stored in the directory specified by `LOG_DIR`.
 
 If `CLONE_METHOD` is set to `"ssh"`, you need to provide SSH keys.
 
-- **Mount SSH Keys**: Mount your SSH keys directory into the container at `/root/.ssh`.
+- **Mount SSH Keys**: Mount your SSH keys directory into the container at `/tmp/ssh_keys_mount`.
+
+The contents of the ssh directory will be mounted to `/root/.ssh` directory on the container. 
 
   ```bash
   -v /path/to/ssh/keys:/root/.ssh
@@ -125,7 +128,6 @@ If `CLONE_METHOD` is set to `"ssh"`, you need to provide SSH keys.
 
 ## Notes
 
-- **Cloning Repositories**: Repositories are cloned into `/app/github_repos` and `/app/gitlab_repos` inside the container.
 - **Self-Repairing Mechanism**: The tool automatically reclones repositories if corruption is detected.
 - **Archived Repositories**: The tool does not clone archived repositories.
 - **Customization**: Adjust environment variables to suit your needs.
