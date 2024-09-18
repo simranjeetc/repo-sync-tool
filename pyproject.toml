@@ -1,0 +1,8 @@
+[project]
+name = "repo-sync-tool"
+version = "1.0.0-dev"
+description = "A tool for syncing repositories"
+authors = [
+    { name = "Simran Chawla", email = "singhsimranck@gmail.com" }
+]
+

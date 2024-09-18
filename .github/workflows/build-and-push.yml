@@ -13,19 +13,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    # Step to log in to Docker Hub
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - uses: actions/checkout@v4
+        # Set up Python environment (optional)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    # Step to build the Docker image
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag repo-sync-tool:$(date +%s)
+        # Step to extract version from pyproject.toml
+      - name: Extract project version
+        id: get_version
+        run: |
+          version=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)
+          echo "VERSION=$version" >> $GITHUB_ENV
 
-    # Step to tag the image with Docker Hub repository
-    - name: Tag the image
-      run: docker tag repo-sync-tool:$(date +%s) ${{ secrets.DOCKERHUB_USERNAME }}/repo-sync-tool:latest
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    # Step to push the image to Docker Hub
-    - name: Push the image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/repo-sync-tool:latest
+      # Build the Docker image using the project version as a tag
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag repo-sync-tool:${{ env.VERSION }}
+
+      # Tag the image with Docker Hub repository and version
+      - name: Tag the image
+        run: docker tag repo-sync-tool:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/repo-sync-tool:${{ env.VERSION }}
+
+      # Push the image to Docker Hub
+      - name: Push the image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/repo-sync-tool:${{ env.VERSION }}
