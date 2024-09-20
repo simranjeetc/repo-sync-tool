@@ -34,10 +34,15 @@ class RepoCloner:
                 log_error(f"Failed to update {repo_name}: {e}")
 
     def clone_gitlab_repo(self, repo_info, base_dir):
-        path_parts = repo_info['name_with_namespace'].split(' / ')
+        # Extract the namespace path from the repository info
+        repo_namespace_path = repo_info['path_with_namespace']
+
+        # Proceed with cloning
+        path_parts = repo_namespace_path.split('/')
         repo_name = path_parts[-1]
         repo_path = os.path.join(base_dir, *path_parts[1:-1], repo_name)
         clone_url = repo_info['ssh_url_to_repo'] if CLONE_METHOD == 'ssh' else repo_info['http_url_to_repo']
+
         if not os.path.exists(repo_path):
             os.makedirs(os.path.dirname(repo_path), exist_ok=True)
             try:
@@ -59,3 +64,4 @@ class RepoCloner:
                 self.clone_gitlab_repo(repo_info, base_dir)
             except GitCommandError as e:
                 log_error(f"Failed to update {repo_name}: {e}")
+
