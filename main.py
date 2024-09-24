@@ -10,6 +10,10 @@ from gitlab_manager import GitLabManager
 from repo_cloner import RepoCloner
 
 def clone_github_repos():
+    if not GITHUB_ORGS or GITHUB_ORGS == ['']:
+        log_info("GITHUB_ORGS is not provided, skipping GitHub repo cloning.")
+        return
+
     github_manager = GitHubManager(GITHUB_ORGS)
     repos = github_manager.get_repositories()
     cloner = RepoCloner()
