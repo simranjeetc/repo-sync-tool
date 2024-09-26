@@ -99,6 +99,7 @@ You can set environment variables by:
      -e GITLAB_TOKEN="YourGitLabAccessToken" \
      -e CLONE_METHOD="ssh" \
      -e CHECK_INTERVAL="3600" \
+     -e GIT_DEPTH="15" \
      -e SYNC_ENABLED="true" \
      -e BASE_REPO_DIR="/app/repos" \
      -e GITLAB_API_URL="https://gitlab.com/api/v4" \
