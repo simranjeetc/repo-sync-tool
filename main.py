@@ -9,6 +9,7 @@ from github_manager import GitHubManager
 from gitlab_manager import GitLabManager
 from repo_cloner import RepoCloner
 
+
 def clone_github_repos():
     if not GITHUB_ORGS or GITHUB_ORGS == ['']:
         log_info("GITHUB_ORGS is not provided, skipping GitHub repo cloning.")
@@ -22,6 +23,7 @@ def clone_github_repos():
         os.makedirs(base_dir, exist_ok=True)
         cloner.clone_or_update_repo(repo, base_dir)
 
+
 def clone_gitlab_repos():
     gitlab_manager = GitLabManager(GITLAB_PROJECTS)
     repos = gitlab_manager.get_repositories()
@@ -30,6 +32,7 @@ def clone_gitlab_repos():
         base_dir = BASE_REPO_DIR
         cloner.clone_gitlab_repo(repo, base_dir)
 
+
 def periodic_task():
     while SYNC_ENABLED:
         log_info("Starting periodic sync.")
@@ -37,6 +40,7 @@ def periodic_task():
         clone_gitlab_repos()
         log_info("Periodic sync completed.")
         time.sleep(CHECK_INTERVAL)
+
 
 if __name__ == '__main__':
     log_info("Starting the repository synchronization tool.")

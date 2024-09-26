@@ -36,6 +36,10 @@ class RepoCloner:
     def get_fetch_and_reset(self, repo_dir, repo_info):
         repo = Repo(repo_dir)
         origin = repo.remotes.origin
+        # Ensure the refspec is correctly configured
+        if "fetch" not in origin.config_reader.get("remote.origin"):
+            origin.config_writer.set("remote.origin.fetch", "+refs/heads/*:refs/heads/*")
+
         origin.fetch(depth=GIT_DEPTH)  # Fetch with depth if provided
         default_branch = repo_info['default_branch']
         repo.git.reset('--hard', f'origin/{default_branch}')
