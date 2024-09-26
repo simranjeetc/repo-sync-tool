@@ -29,17 +29,13 @@ class RepoCloner:
                 log_warning(f"Invalid repository at {repo_dir}, recloning.")
                 os.rmdir(repo_dir)
                 self.clone_or_update_repo(repo_info, base_dir)
-            except GitCommandError as e:
+            except Exception as e:
                 log_error(f"Failed to update {repo_name}: {e}")
                 self.handle_repo_failure(repo_info, base_dir, repo_dir)
 
     def get_fetch_and_reset(self, repo_dir, repo_info):
         repo = Repo(repo_dir)
         origin = repo.remotes.origin
-        # Ensure the refspec is correctly configured
-        if "fetch" not in origin.config_reader.get("remote.origin"):
-            origin.config_writer.set("remote.origin.fetch", "+refs/heads/*:refs/heads/*")
-
         origin.fetch(depth=GIT_DEPTH)  # Fetch with depth if provided
         default_branch = repo_info['default_branch']
         repo.git.reset('--hard', f'origin/{default_branch}')
@@ -89,6 +85,6 @@ class RepoCloner:
                 log_warning(f"Invalid repository at {repo_path}, recloning.")
                 os.rmdir(repo_path)
                 self.clone_gitlab_repo(repo_info, base_dir)
-            except GitCommandError as e:
+            except Exception as e:
                 log_error(f"Failed to update {repo_name}: {e}")
                 self.handle_repo_failure(repo_info, base_dir, repo_path)
