@@ -36,8 +36,8 @@ class RepoCloner:
     def get_fetch_and_reset(self, repo_dir, repo_info):
         repo = Repo(repo_dir)
         origin = repo.remotes.origin
+        origin.fetch(depth=GIT_DEPTH)  # Fetch with depth if provided
         default_branch = repo_info['default_branch']
-        origin.fetch(f'origin/{default_branch}', depth=GIT_DEPTH)  # Fetch with depth if provided
         repo.git.reset('--hard', f'origin/{default_branch}')
 
     def git_clone(self, clone_url, repo_dir, repo_info, repo_name):
